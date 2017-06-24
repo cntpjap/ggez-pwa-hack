@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
 
@@ -9,7 +10,15 @@ class GoogleMapContainer extends Component {
       center: {
         lat: 0,
         lng: 0
-      }
+      },
+      markers: [{
+      position: {
+        lat: 25.0112183,
+        lng: 121.52067570000001,
+      },
+      key: `Taiwan`,
+      defaultAnimation: 2,
+      }]
     }
   }
 
@@ -26,6 +35,8 @@ class GoogleMapContainer extends Component {
     }
   }
 
+
+
   render() {
     return (
       <div className="google-map-wrapper">
@@ -37,6 +48,8 @@ class GoogleMapContainer extends Component {
             <div style={{ height: `100%` }} />
           }
           center={this.state.center}
+          markers={this.state.markers}
+          onMarkerRightClick={_.noop}
         />
       </div>
     )
