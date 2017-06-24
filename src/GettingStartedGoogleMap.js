@@ -22,7 +22,36 @@ const SimpleMapExampleGoogleMap = withGoogleMap(props => (
 /*
  * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
  */
+
 export default class SimpleMapExample extends Component {
+
+  constructor(props){
+    super(props);
+    this.showPosition = this.showPosition.bind(this);
+    this.getLocation = this.getLocation.bind(this);
+    
+    this.state = {
+    lat : '',
+    lng : ''
+    };
+  }
+
+  showPosition(position) {
+    this.setState({
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    });
+  }
+
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.showPosition);
+    }
+  }
+
+  componentWillMount(){
+    this.getLocation();
+  }
 
   render() {
     return (
