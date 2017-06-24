@@ -20,6 +20,38 @@ class GoogleMapContainer extends Component {
       defaultAnimation: 2,
       }]
     }
+    this.getNearestToilet = this.getNearestToilet.bind(this)
+  }
+
+  getNearestToilet(){
+    //TODO: Un Mock
+    //Latitude 13.72342 Longitude 100.47623
+    return [
+      {
+      position: {
+        lat: 13.6868217,
+        lng: 100.5678229,
+      },
+      key: `salad`,
+      defaultAnimation: 2,
+      },
+      {
+      position: {
+        lat: 13.7150342,
+        lng: 100.4873203,
+      },
+      key: `samre`,
+      defaultAnimation: 2,
+      },
+      {
+      position: {
+        lat: 13.72342 ,
+        lng: 100.476233,
+      },
+      key: `japhome`,
+      defaultAnimation: 2,
+      }
+    ];
   }
 
   componentWillMount() {
@@ -29,7 +61,8 @@ class GoogleMapContainer extends Component {
           center: {
             lat: geoposition.coords.latitude,
             lng: geoposition.coords.longitude
-          }
+          },
+          markers : this.getNearestToilet()
         })
       })
     }
