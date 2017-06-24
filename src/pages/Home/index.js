@@ -6,7 +6,7 @@ class Home extends Component {
     render() {
         return (
             <div className="container">
-              <h1>CLEANDEE</h1>
+              <h1>CLEAN CLEAN</h1>
               <div className="row">
                 <div className="col-md-12">
                   <GoogleMapContainer />

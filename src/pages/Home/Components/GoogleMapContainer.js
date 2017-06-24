@@ -5,49 +5,30 @@ import GoogleMapWrapper from './GoogleMapWrapper'
 class GoogleMapContainer extends Component {
   constructor(props){
     super(props)
-    // this.state = {
-    //   lat: 13.6517367,
-    //   lng: 100.4949226
-    // }
-        this.state = {
-      lat: 0,
-      lng: 0
+    this.state = {
+      center: {
+        lat: 0,
+        lng: 0
+      }
     }
-
-    this.handleLatLng = this.handleLatLng.bind(this)
   }
 
-  handleLatLng(geoposition) {
-    this.setState({
-      lat: geoposition.coords.latitude,
-      lng: geoposition.coords.longitude
-    })
-    
-    console.log('in han',this.state)
-  }
-
-  componentDidMount() {
-    console.log('nav',navigator)
+  componentWillMount() {
     if (navigator.geolocation) {
-      console.log('willup')
-      navigator.geolocation.getCurrentPosition(this.handleLatLng)
+      navigator.geolocation.getCurrentPosition((geoposition) => {
+        this.setState({
+          center: {
+            lat: geoposition.coords.latitude,
+            lng: geoposition.coords.longitude
+          }
+        })
+      })
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('recv')
-    this.setState({
-      lat: nextProps.lat,
-      lng: nextProps.lng
-    })
   }
 
   render() {
-    console.log(11,this.state)
     return (
       <div className="google-map-wrapper">
-        lat = {this.state.lat}
-        lng = {this.state.lng}
         <GoogleMapWrapper
           containerElement={
             <div style={{ height: `100%` }} />
@@ -55,8 +36,7 @@ class GoogleMapContainer extends Component {
           mapElement={
             <div style={{ height: `100%` }} />
           }
-          lat={this.state.lat}
-          lng={this.state.lng}
+          center={this.state.center}
         />
       </div>
     )
