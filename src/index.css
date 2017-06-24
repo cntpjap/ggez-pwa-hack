@@ -4,8 +4,8 @@ body {
   font-family: sans-serif;
 }
 
-#roots {
-	width: 100%;
-	height: 100%;
+#map-container {
+	/*width: 100%;*/
+	height: 500px;
 	position: absolute;
 }
