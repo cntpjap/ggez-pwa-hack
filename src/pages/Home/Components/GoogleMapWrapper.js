@@ -4,6 +4,7 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  InfoWindow,
 } from "react-google-maps";
 
 class GoogleMapWrapper extends Component {
@@ -19,7 +20,13 @@ class GoogleMapWrapper extends Component {
       <Marker
         {...marker}
         onClick={() => this.props.onMarkerClick(marker)}
-      />
+      >
+        {marker.showInfo && (
+          <InfoWindow onCloseClick={() => this.props.onMarkerClose(marker)}>
+            <div>{marker.infoContent}</div>
+          </InfoWindow>
+        )}
+      </Marker>
       ))}
       </GoogleMap>
     )

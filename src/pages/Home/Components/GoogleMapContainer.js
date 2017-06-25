@@ -7,12 +7,12 @@ import { fetchMarkers, addMarker } from '../../../lib/firebase'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
 
-function showMarkerInfo(state, targetMarker){
+function showMarkerInfo(state, targetMarker, isOpen){
   return {
     markers : state.markers.map( marker => {
       if(targetMarker === marker){
-        console.log('in marker on click'+true);
-        return marker = {...marker, showInfo: true}
+        console.log('in marker targetMarker on click show='+isOpen);
+        return marker = {...marker, showInfo: isOpen}
       }
       else{
         console.log('in marker on click'+false);
@@ -36,6 +36,7 @@ class GoogleMapContainer extends Component {
 
     this.handleMarkerClick = this.handleMarkerClick.bind(this)
     this.handleMapClick = this.handleMapClick.bind(this)
+    this.handleMarkerClose = this.handleMarkerClose.bind(this);
   }
 
   handleMapClick(event) {
@@ -70,7 +71,11 @@ class GoogleMapContainer extends Component {
   }
 
   handleMarkerClick(targetMarker){
-    this.setState(showMarkerInfo(this.state,targetMarker));
+    this.setState(showMarkerInfo(this.state,targetMarker,true));
+  }
+
+  handleMarkerClose(targetMarker) {
+    this.setState(showMarkerInfo(this.state,targetMarker,false));
   }
 
   componentWillMount() {
@@ -109,6 +114,7 @@ class GoogleMapContainer extends Component {
           center={this.state.center}
           markers={this.state.markers}
           onMarkerClick={this.handleMarkerClick}
+          onMarkerClose={this.handleMarkerClose}
           onMapClick={this.handleMapClick}
         />
       </div>
