@@ -256,7 +256,6 @@ class GoogleMapContainer extends Component {
   render() {
     return (
       <div className="google-map-wrapper">
-        counter: {this.props.counter}
         <GoogleMapWrapper
           containerElement={
             <div style={{ height: `100%` }} />
