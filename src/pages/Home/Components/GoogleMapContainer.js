@@ -3,6 +3,20 @@ import _ from 'lodash'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
 
+function showMarkerInfo(state, targetMarker){
+  return {
+    markers : state.markers.map( marker => {
+      if(targetMarker === marker){
+        return marker = {...marker, showInfo: true}
+      }
+      else{
+        return marker = {...marker, showInfo: false}
+      }
+    }),
+    center : state.center
+  }
+}
+
 class GoogleMapContainer extends Component {
   constructor(props){
     super(props)
@@ -18,9 +32,11 @@ class GoogleMapContainer extends Component {
       },
       key: `Taiwan`,
       defaultAnimation: 2,
+      showInfo: false,
       }]
     }
     this.getNearestToilet = this.getNearestToilet.bind(this)
+    this.handleMarkerClick = this.handleMarkerClick.bind(this)
   }
 
   getNearestToilet(){
@@ -34,6 +50,7 @@ class GoogleMapContainer extends Component {
       },
       key: `salad`,
       defaultAnimation: 2,
+      showInfo: false,
       },
       {
       position: {
@@ -42,6 +59,7 @@ class GoogleMapContainer extends Component {
       },
       key: `samre`,
       defaultAnimation: 2,
+      showInfo: false,
       },
       {
       position: {
@@ -50,8 +68,13 @@ class GoogleMapContainer extends Component {
       },
       key: `japhome`,
       defaultAnimation: 2,
+      showInfo: false,
       }
     ];
+  }
+
+  handleMarkerClick(targetMarker){
+    this.setState(showMarkerInfo(this.state,targetMarker));
   }
 
   componentWillMount() {
@@ -68,8 +91,6 @@ class GoogleMapContainer extends Component {
     }
   }
 
-
-
   render() {
     return (
       <div className="google-map-wrapper">
@@ -82,7 +103,8 @@ class GoogleMapContainer extends Component {
           }
           center={this.state.center}
           markers={this.state.markers}
-          onMarkerRightClick={_.noop}
+          onMarkerClick={this.handleMarkerClick}
+          onMapClick = {(e)=>{ console.log(e.latLng.lat())}}
         />
       </div>
     )

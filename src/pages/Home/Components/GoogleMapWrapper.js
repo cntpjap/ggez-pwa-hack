@@ -13,11 +13,12 @@ class GoogleMapWrapper extends Component {
       <GoogleMap
         defaultZoom={15}
         center={this.props.center}
+        onClick={this.props.onMapClick}
       >
       {this.props.markers.map((marker, index) => (
       <Marker
         {...marker}
-        onRightClick={() => this.props.onMarkerRightClick(index)}
+        onClick={() => this.props.onMarkerClick(marker)}
       />
       ))}
       </GoogleMap>
