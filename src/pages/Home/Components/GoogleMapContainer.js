@@ -113,6 +113,10 @@ class GoogleMapContainer extends Component {
   }
 
   componentWillMount() {
+
+  }
+
+  componentDidMount() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((geoposition) => {
         this.setState({
