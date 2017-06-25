@@ -20,9 +20,9 @@ export const fetchMarkers = () => {
   return database.ref('/').once('value')
 }
 
-export const addMarker = (name, position, upvote, downvote) => {
+export const addMarker = (name, position, upvote, downvote, comment) => {
   let key = database.ref('/').push().key
-  let model = markerModel(key, name, position, upvote, downvote)
+  let model = markerModel(key, name, position, upvote, downvote, comment)
   return database.ref('/'+ key).set(model)
 }
 

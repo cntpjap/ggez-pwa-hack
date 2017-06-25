@@ -1,4 +1,4 @@
-export default (id, name, position, upvote, downvote) => {
+export default (id, name, position, upvote, downvote, comment) => {
   return {
     id,
     name,
@@ -6,6 +6,7 @@ export default (id, name, position, upvote, downvote) => {
     key: id,
     defaultAnimation: 2,
     upvote,
-    downvote
+    downvote,
+    comment,
   }
 }
