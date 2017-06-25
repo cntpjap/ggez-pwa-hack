@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react'
+import Modal from 'react-responsive-modal'
 import {
   withGoogleMap,
   GoogleMap,
@@ -21,11 +22,11 @@ class GoogleMapWrapper extends Component {
         {...marker}
         onClick={() => this.props.onMarkerClick(marker)}
       >
-        {marker.showInfo && (
-          <InfoWindow onCloseClick={() => this.props.onMarkerClose(marker)}>
-            <div>{marker.infoContent}</div>
-          </InfoWindow>
-        )}
+      {this.props.modal.isOpen && (
+          <Modal open={this.props.modal.isOpen} onClose={this.props.onCloseModal} little>
+            <h2>{this.props.modal.content}</h2>
+          </Modal>
+      )}
       </Marker>
       ))}
       </GoogleMap>

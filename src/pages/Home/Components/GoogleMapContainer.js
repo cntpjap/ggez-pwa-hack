@@ -6,20 +6,47 @@ import { addCounter } from '../../../lib/redux/actions'
 import { fetchMarkers, addMarker } from '../../../lib/firebase'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
+import fetch from 'isomorphic-fetch'
 
-function showMarkerInfo(state, targetMarker, isOpen){
+// function showMarkerInfo(state, targetMarker, isOpen){
+//   return {
+//     markers : state.markers.map( marker => {
+//       if(targetMarker === marker){
+//         console.log('in marker targetMarker on click show='+isOpen);
+//         return marker = {...marker, showInfo: isOpen}
+//       }
+//       else{
+//         console.log('in marker on click'+false);
+//         return marker = {...marker, showInfo: false}
+//       }
+//     }),
+//     center : state.center
+//   }
+// }
+
+function onOpenModal(state, targetMarker){
   return {
-    markers : state.markers.map( marker => {
-      if(targetMarker === marker){
-        console.log('in marker targetMarker on click show='+isOpen);
-        return marker = {...marker, showInfo: isOpen}
-      }
-      else{
-        console.log('in marker on click'+false);
-        return marker = {...marker, showInfo: false}
-      }
-    }),
-    center : state.center
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : true,
+        content : targetMarker.position.lat,
+        picUrls : [],
+        star: 0
+    }
+  }
+}
+
+function onCloseModal(state){
+  return {
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : false,
+        content : state.modal.content,
+        picUrls : [],
+        star: state.modal.star
+    }
   }
 }
 
@@ -31,12 +58,18 @@ class GoogleMapContainer extends Component {
         lat: 0,
         lng: 0
       },
-      markers: []
+      markers: [],
+      modal: {
+        isOpen : false,
+        content : '',
+        picUrls : [],
+        star: 0
+      }
     }
 
     this.handleMarkerClick = this.handleMarkerClick.bind(this)
     this.handleMapClick = this.handleMapClick.bind(this)
-    this.handleMarkerClose = this.handleMarkerClose.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
   }
 
   handleMapClick(event) {
@@ -71,11 +104,12 @@ class GoogleMapContainer extends Component {
   }
 
   handleMarkerClick(targetMarker){
-    this.setState(showMarkerInfo(this.state,targetMarker,true));
+    this.setState(onOpenModal(this.state, targetMarker))
+    //this.setState(showMarkerInfo(this.state,targetMarker,true));
   }
 
-  handleMarkerClose(targetMarker) {
-    this.setState(showMarkerInfo(this.state,targetMarker,false));
+  handleCloseModal(){
+    this.setState(onCloseModal(this.state, false))
   }
 
   componentWillMount() {
@@ -114,8 +148,9 @@ class GoogleMapContainer extends Component {
           center={this.state.center}
           markers={this.state.markers}
           onMarkerClick={this.handleMarkerClick}
-          onMarkerClose={this.handleMarkerClose}
           onMapClick={this.handleMapClick}
+          modal={this.state.modal}
+          onCloseModal = {this.handleCloseModal}
         />
       </div>
     )
