@@ -5,7 +5,7 @@ class Home extends Component {
     
     render() {
         return (
-            <div className="container home">
+            <div className="container-fluid home">
               <div>
                 <h1>ห้องน้ำสะอาด... ใกล้ตัวคุณ</h1>
               </div>

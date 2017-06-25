@@ -24,18 +24,26 @@ class GoogleMapWrapper extends Component {
       >
       {this.props.modal.isOpen && (
         <Modal open={this.props.modal.isOpen} onClose={this.props.onCloseModal} little>
+          {/*<div className="cool-modal">*/}
           <h2>{this.props.modal.content}</h2>
+          <hr />
           <div className="row">
-            <a onClick={this.props.onClickUpvote}>upvote</a><p>Likes {this.props.modal.upvote}</p>
-            <a onClick={this.props.onClickDownvote}>downvote</a><p>Unlikes {this.props.modal.downvote}</p>
+            <div className="col-md-6">
+              <a onClick={this.props.onClickUpvote} className="yep"><i className="fa fa-thumbs-up"></i>สะอาดจริมๆนะ </a><span>{this.props.modal.upvote} คน</span>
+            </div>
+            <div className="col-md-6">
+              <a onClick={this.props.onClickDownvote} className="nope"><i className="fa fa-thumbs-down"></i>อย่าเข้า! เชื่อเราเถอะ </a><span>{this.props.modal.downvote} คน</span>
+            </div>           
           </div>
           <div>
+            <h4>ความเห็น</h4>
             {this.props.modal.comments.map((comment, index) => (
               <li>{comment}</li>
             ))}
           </div>
-          <input value={this.props.modal.currentComment} onChange={this.props.onInputCommentText} type="text" placeholder="enter comment"/>
-          <button onClick={this.props.onSubmitComment}>Add</button>
+          <input value={this.props.modal.currentComment} onChange={this.props.onInputCommentText} type="text" placeholder="บรรยายประสบการณ์ที่นี่.."/>
+          <button onClick={this.props.onSubmitComment} className="btn primary">เพิ่มความเห็น</button>
+          {/*</div>*/}
         </Modal>
       )}
       </Marker>
