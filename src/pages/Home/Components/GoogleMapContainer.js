@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import _ from 'lodash'
+
+import { addCounter } from '../../../lib/redux/actions'
+import { fetchMarkers, addMarker } from '../../../lib/firebase'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
 
@@ -11,47 +15,41 @@ class GoogleMapContainer extends Component {
         lat: 0,
         lng: 0
       },
-      markers: [{
-      position: {
-        lat: 25.0112183,
-        lng: 121.52067570000001,
-      },
-      key: `Taiwan`,
-      defaultAnimation: 2,
-      }]
+      markers: []
     }
-    this.getNearestToilet = this.getNearestToilet.bind(this)
+
+    this.handleMapClick = this.handleMapClick.bind(this)
   }
 
-  getNearestToilet(){
-    //TODO: Un Mock
-    //Latitude 13.72342 Longitude 100.47623
-    return [
-      {
-      position: {
-        lat: 13.6868217,
-        lng: 100.5678229,
-      },
-      key: `salad`,
-      defaultAnimation: 2,
-      },
-      {
-      position: {
-        lat: 13.7150342,
-        lng: 100.4873203,
-      },
-      key: `samre`,
-      defaultAnimation: 2,
-      },
-      {
-      position: {
-        lat: 13.72342 ,
-        lng: 100.476233,
-      },
-      key: `japhome`,
-      defaultAnimation: 2,
-      }
-    ];
+  handleMapClick(event) {
+    let position = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    }
+    console.log('hand map')
+    
+    // addMarker('test 1', position, 0, 0)
+
+
+
+    // const nextMarkers = [
+    //   ...this.state.markers,
+    //   {
+    //     position: event.latLng,
+    //     defaultAnimation: 2,
+    //     key: Date.now(), // Add a key property for: http://fb.me/react-warning-keys
+    //   },
+    // ];
+    // this.setState({
+    //   markers: nextMarkers,
+    // });
+
+    // if (nextMarkers.length === 3) {
+    //   this.props.toast(
+    //     `Right click on the marker to remove it`,
+    //     `Also check the code!`
+    //   );
+    // }
   }
 
   componentWillMount() {
@@ -61,18 +59,24 @@ class GoogleMapContainer extends Component {
           center: {
             lat: geoposition.coords.latitude,
             lng: geoposition.coords.longitude
-          },
-          markers : this.getNearestToilet()
+          }
         })
       })
     }
+    fetchMarkers().then((data) => {
+      let markers = _.values(data.val());
+
+      console.log(markers,'getsec')
+      this.setState({
+        markers: markers
+      })
+    })
   }
-
-
 
   render() {
     return (
       <div className="google-map-wrapper">
+        counter: {this.props.counter}
         <GoogleMapWrapper
           containerElement={
             <div style={{ height: `100%` }} />
@@ -83,6 +87,7 @@ class GoogleMapContainer extends Component {
           center={this.state.center}
           markers={this.state.markers}
           onMarkerRightClick={_.noop}
+          onMapClick={this.handleMapClick}
         />
       </div>
     )
@@ -90,4 +95,18 @@ class GoogleMapContainer extends Component {
 }
 // lat: 13.6517367, lng: 100.4949226
 
-export default GoogleMapContainer
+const mapStateToProps = (state) => {
+  console.log('mapstp', state,state.markers)
+  return {
+    markers: state.markers,
+    counter: state.counter,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		addCounter: (count) => { dispatch(addCounter(count)) }
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GoogleMapContainer)

@@ -11,8 +11,10 @@ class GoogleMapWrapper extends Component {
   render() {
     return (
       <GoogleMap
-        defaultZoom={15}
+        defaultZoom={17}
         center={this.props.center}
+        onClick={this.props.onMapClick}
+        onDoubleClick={this.props.onDoubleClick}
       >
       {this.props.markers.map((marker, index) => (
       <Marker

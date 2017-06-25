@@ -1,5 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
+import {Provider} from 'react-redux'
 import {
   BrowserRouter as Router,
   Route,
@@ -7,29 +8,41 @@ import {
 } from 'react-router-dom'
 import Home from './pages/Home'
 import FAQ from './pages/FAQ'
-// import PageNotFound from './pages/PageNotFound'
-import registerServiceWorker from './lib/registerServiceWorker';
+import PageNotFound from './pages/PageNotFound'
+import configureStore from './lib/redux/configureStore'
+import {init as firebaseInit} from './lib/firebase'
+import registerServiceWorker from './lib/registerServiceWorker'
 
 import './index.css';
 
 
+class App extends Component {
+  constructor(props) {
+    super(props)
+    firebaseInit()
+    this.store = configureStore()
+  }
+  render() {
+    return (
+    <Provider  store={this.store}>
+      <Router>
+      <div>
+          {/*<ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/faq">FAQ</Link></li>
+          </ul>
 
-ReactDOM.render(
-  // <Provider store={store}>
-		<Router>
-    <div>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/faq">FAQ</Link></li>
-      </ul>
+          <hr/>*/}
 
-      <hr/>
+          <Route exact path="/" component={Home}/>
+          <Route path="/faq" component={FAQ}/>
+          {/*<Route path="*" component={PageNotFound}/>*/}
+        </div>
+      </Router>
+    </Provider>
+    )
+  }
+}
 
-      <Route exact path="/" component={Home}/>
-      <Route path="/faq" component={FAQ}/>
-    </div>
-    </Router>
-	// </Provider>
-  ,
-  document.getElementById('root'));
-registerServiceWorker();
+ReactDOM.render(<App />, document.getElementById('root'))
+registerServiceWorker()
