@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { addCounter } from '../../../lib/redux/actions'
-import { fetchMarkers, addMarker } from '../../../lib/firebase'
+import { fetchMarker, fetchMarkers, addMarker, updateMarker } from '../../../lib/firebase'
 
 import GoogleMapWrapper from './GoogleMapWrapper'
 import fetch from 'isomorphic-fetch'
@@ -25,19 +25,26 @@ import fetch from 'isomorphic-fetch'
 // }
 
 function onOpenModal(state, targetMarker){
+  console.log('open modal')
+  console.log(targetMarker.comment)
   return {
     markers : state.markers,
     center : state.center,
     modal : {
         isOpen : true,
-        content : targetMarker.position.lat,
+        content : targetMarker.name,
         picUrls : [],
-        star: 0
+        upvote : targetMarker.upvote,
+        downvote : targetMarker.downvote,
+        comments : targetMarker.comment!=null? targetMarker.comment:[],
+        currentComment : '',
+        currentMarker : targetMarker,
     }
   }
 }
 
 function onCloseModal(state){
+  updateMarkerRepository(state)
   return {
     markers : state.markers,
     center : state.center,
@@ -45,7 +52,84 @@ function onCloseModal(state){
         isOpen : false,
         content : state.modal.content,
         picUrls : [],
-        star: state.modal.star
+        upvote : state.modal.upvote,
+        downvote : state.modal.downvote,
+        comments : state.modal.comment,
+        currentComment : state.modal.currentComment,
+        currentMarker : state.modal.currentMarker
+    }
+  }
+}
+
+function updateCurrentComment(state, input){
+  return {
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : state.modal.isOpen,
+        content : state.modal.content,
+        picUrls : [],
+        upvote : state.modal.upvote,
+        downvote : state.modal.downvote,
+        comments : state.modal.comments,
+        currentComment : input,
+        currentMarker : state.modal.currentMarker
+    }
+  }
+}
+
+function addNewComment(state){
+  return {
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : state.modal.isOpen,
+        content : state.modal.content,
+        picUrls : [],
+        upvote : state.modal.upvote,
+        downvote : state.modal.downvote,
+        comments : state.modal.comments.push(state.modal.currentComment),
+        currentComment : state.modal.currentComment,
+        currentMarker : state.modal.currentMarker
+    }
+  }
+}
+
+function updateMarkerRepository(state){
+  console.log(state.modal.currentMarker)
+  updateMarker(state.modal.currentMarker.id, state.modal.currentMarker.name , state.modal.currentMarker.position, state.modal.upvote, state.modal.downvote, state.modal.comments)
+}
+
+function addVote(state){
+  return {
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : state.modal.isOpen,
+        content : state.modal.content,
+        picUrls : [],
+        upvote : state.modal.upvote+1,
+        downvote : state.modal.downvote,
+        comments : state.modal.comments,
+        currentComment : state.modal.currentComment,
+        currentMarker : state.modal.currentMarker
+    }
+  }
+}
+
+function downVote(state){
+  return {
+    markers : state.markers,
+    center : state.center,
+    modal : {
+        isOpen : state.modal.isOpen,
+        content : state.modal.content,
+        picUrls : [],
+        upvote : state.modal.upvote,
+        downvote : state.modal.downvote+1,
+        comments : state.modal.comments,
+        currentComment : state.modal.currentComment,
+        currentMarker : state.modal.currentMarker
     }
   }
 }
@@ -63,13 +147,21 @@ class GoogleMapContainer extends Component {
         isOpen : false,
         content : '',
         picUrls : [],
-        star: 0
+        upvote : 0,
+        downvote : 0,
+        comments : [],
+        currentComment : '',
+        currentMarker : {}
       }
     }
 
     this.handleMarkerClick = this.handleMarkerClick.bind(this)
     this.handleMapClick = this.handleMapClick.bind(this)
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleChangeCommentText = this.handleChangeCommentText.bind(this);
+    this.handleSubmitComment = this.handleSubmitComment.bind(this);
+    this.handleClickUpvote = this.handleClickUpvote.bind(this);
+    this.handleClickDownvote = this.handleClickDownvote.bind(this);
   }
 
   handleMapClick(event) {
@@ -104,12 +196,35 @@ class GoogleMapContainer extends Component {
   }
 
   handleMarkerClick(targetMarker){
-    this.setState(onOpenModal(this.state, targetMarker))
+    fetchMarker(targetMarker.key)
+        .then((data) => {
+          console.log('fetch db');
+          console.log(data.val())
+        this.setState(onOpenModal(this.state, data.val()))
+      })
+      
     //this.setState(showMarkerInfo(this.state,targetMarker,true));
   }
 
   handleCloseModal(){
     this.setState(onCloseModal(this.state, false))
+  }
+
+  handleChangeCommentText(targetInput){
+    this.setState(updateCurrentComment(this.state,targetInput.target.value))
+  }
+
+  handleSubmitComment(){
+    this.setState(addNewComment(this.state))
+    this.setState(updateCurrentComment(this.state,''))
+  }
+
+  handleClickUpvote(){
+    this.setState(addVote(this.state))
+  }
+
+  handleClickDownvote(){
+    this.setState(downVote(this.state))
   }
 
   componentWillMount() {
@@ -155,6 +270,10 @@ class GoogleMapContainer extends Component {
           onMapClick={this.handleMapClick}
           modal={this.state.modal}
           onCloseModal = {this.handleCloseModal}
+          onInputCommentText = {this.handleChangeCommentText}
+          onSubmitComment = {this.handleSubmitComment}
+          onClickUpvote = {this.handleClickUpvote}
+          onClickDownvote = {this.handleClickDownvote}
         />
       </div>
     )
