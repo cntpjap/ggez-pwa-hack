@@ -5,10 +5,12 @@ class Home extends Component {
     
     render() {
         return (
-            <div className="container">
-              <h1>CLEAN CLEAN</h1>
+            <div className="container home">
+              <div>
+                <h1>ห้องน้ำสะอาด... ใกล้ตัวคุณ</h1>
+              </div>
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-12 map-container">
                   <GoogleMapContainer />
                 </div>
               </div>

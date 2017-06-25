@@ -1,10 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Mitr');
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background: url('/clean wc.png') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 .google-map-wrapper {
 	height: 500px;
   width: 100%;
+
+  margin: 50px auto;
+}
+
+.map-container {
+  padding: 0px 0px;
+}
+
+.home {
+  /*padding: 0px 0px;*/
+}
+
+.home h1 {
+  text-align: center;
+  margin: 30px auto;
+  font-family: 'Mitr', sans-serif;
+  color: white;
+}
+
+@media (max-width: 769px) {
+  body {
+    background: black;
+  }
+
+  .home h1 {
+    font-size: 24px;
+    margin-bottom: 0px;
+  }
 }
